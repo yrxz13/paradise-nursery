@@ -8,17 +8,13 @@ const cartSlice = createSlice({
       if (state.items.some(item => item.id === product.id)) return;
       state.items.push({ ...product, quantity: 1 });
     },
-    increaseQuantity(state, { payload: id }) {
-      const item = state.items.find(item => item.id === id);
-      if (item) item.quantity += 1;
-    },
-    decreaseQuantity(state, { payload: id }) {
+    updateQuantity(state, { payload: { id, quantity } }) {
       const index = state.items.findIndex(item => item.id === id);
-      if (index === -1) return;
-      if (state.items[index].quantity === 1) {
+      if (index === -1 || !Number.isSafeInteger(quantity) || quantity < 0) return;
+      if (quantity === 0) {
         state.items.splice(index, 1);
       } else {
-        state.items[index].quantity -= 1;
+        state.items[index].quantity = quantity;
       }
     },
     removeItem(state, { payload: id }) {
@@ -27,7 +23,7 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addItem, increaseQuantity, decreaseQuantity, removeItem } = cartSlice.actions;
+export const { addItem, removeItem, updateQuantity } = cartSlice.actions;
 export const selectCartItems = state => state.cart.items;
 export const selectCartCount = createSelector(
   [selectCartItems], items => items.reduce((count, item) => count + item.quantity, 0),

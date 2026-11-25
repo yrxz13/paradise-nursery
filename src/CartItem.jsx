@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { decreaseQuantity, increaseQuantity, removeItem, selectCartCount, selectCartItems, selectCartTotal } from './CartSlice';
+import { removeItem, updateQuantity, selectCartCount, selectCartItems, selectCartTotal } from './CartSlice';
 import { formatPrice } from './plants';
 
 export default function CartItem() {
@@ -30,10 +30,10 @@ export default function CartItem() {
                 </div>
                 <div className="quantity" aria-label={'Quantity for ' + item.name}>
                   <button type="button" aria-label={'Decrease quantity of ' + item.name}
-                    onClick={() => dispatch(decreaseQuantity(item.id))}>&minus;</button>
+                    onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}>&minus;</button>
                   <span aria-live="polite">{item.quantity}</span>
                   <button type="button" aria-label={'Increase quantity of ' + item.name}
-                    onClick={() => dispatch(increaseQuantity(item.id))}>+</button>
+                    onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}>+</button>
                 </div>
                 <strong className="line-total" aria-label={'Total for ' + item.name}>{formatPrice(item.priceCents * item.quantity)}</strong>
               </li>
